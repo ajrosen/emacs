@@ -120,14 +120,17 @@
 (defun btt-get-string-variable (var)
   "Get the value of the BetterTouchTool variable VAR."
 
-  (with-current-buffer (url-retrieve-synchronously (concat (btt--get-string-url) var (btt--secret)))
-    (goto-char (point-max))
-    (thing-at-point 'line)))
+  (let ((buffer (url-retrieve-synchronously (concat (btt--get-string-url) var (btt--secret)))))
+    (with-current-buffer buffer
+      (goto-char (point-max))
+      (let ((x (thing-at-point 'line)))
+	(kill-buffer buffer)
+	x))))
 
 (defun btt-set-string-variable (var value)
   "Set the VALUE of the BetterTouchTool variable VAR."
 
-  (url-retrieve-synchronously (concat (btt--set-string-url) var "&to=" value (btt--secret))))
+  (kill-buffer (url-retrieve-synchronously (concat (btt--set-string-url) var "&to=" value (btt--secret)))))
 
 (defun btt--update-widget (uuid &optional text background)
   "Tell BetterTouchTool to update a Touch Bar widget's text and/or background color.
@@ -139,7 +142,7 @@ parameter is not updated."
   (let ((btt--url (concat (btt--update-url) uuid (btt--secret))))
     (if text (setq btt--url (concat btt--url "&text=" text)))
     (if background (setq btt--url (concat btt--url "&background_color=" (btt--rgb-to-btt background))))
-    (url-retrieve btt--url #'(lambda (status) (kill-buffer)) nil t t)))
+    (url-retrieve btt--url #'(lambda (status) (kill-buffer) status) nil t t)))
 
 ;; Meta-hook
 (defun btt--run-hooks ()
