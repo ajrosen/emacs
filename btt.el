@@ -30,10 +30,12 @@
 
 ;;; Code:
 
-(cl-defstruct btt-widget (var nil :read-only t) (uuid nil :read-only t) function)
-(defvar btt--widgets nil "List of widgets (uuid/function pairs) to be processed by btt--run-hooks")
+(cl-defstruct btt-widget (var nil :read-only t) (uuid nil :read-only t) attributes function)
+(cl-defstruct btt-widget-attrs text icon_data icon_path background_color font_color font_size)
+
 (eval-when-compile (defvar btt--widget))
 
+(defvar btt--widgets nil "List of widgets (uuid/function pairs) to be processed by btt--run-hooks")
 
 ;; Customization
 (defgroup btt nil
@@ -137,8 +139,7 @@ parameter is not updated."
   (let ((btt--url (concat (btt--update-url) uuid (btt--secret))))
     (if text (setq btt--url (concat btt--url "&text=" text)))
     (if background (setq btt--url (concat btt--url "&background_color=" (btt--rgb-to-btt background))))
-    (url-retrieve btt--url #'(lambda (status) status) nil t t)))
-
+    (url-retrieve btt--url #'(lambda (status) (kill-buffer)) nil t t)))
 
 ;; Meta-hook
 (defun btt--run-hooks ()
