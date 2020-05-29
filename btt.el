@@ -26,7 +26,9 @@
 
 ;;; Commentary:
 
-;; Interface to BetterTouchTool (see URL `https://docs.bettertouchtool.net/').
+;; Send commands to a BetterTouchTool Webserver (see URL
+;; `https://docs.bettertouchtool.net/', URL
+;; `https://docs.bettertouchtool.net/docs/1104_webserver.html').
 
 ;;; Code:
 
@@ -42,9 +44,9 @@
   "BetterTouchTool"
 
   :group 'comm
-  :version "1.0"
   :prefix "btt-"
-  :link '(url-link "https://docs.bettertouchtool.net/"))
+  :link '(url-link :tag "Integrated Webserver" "https://docs.bettertouchtool.net/docs/1104_webserver.html")
+  :link '(url-link :tag "BetterTouchTool Documentation" "https://docs.bettertouchtool.net/"))
 
 (defcustom btt-protocol "http"
   "Protocol for the BetterTouchTool web server."
