@@ -1,4 +1,4 @@
-;;; btt.el --- Interface to BetterTouchTool -*- lexical-binding: t -*-
+;;; btt.el --- Interface to BetterTouchTool -*- lexical-binding: t; -*-
 
 ;; Author: Andy Rosen <ajr@corp.mlfs.org>
 ;; Version: 1.0
@@ -23,12 +23,14 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
+
 ;;; Commentary:
-;;
+
 ;; Send commands to a BetterTouchTool Webserver (see URL
 ;; `https://docs.bettertouchtool.net/', URL
 ;; `https://docs.bettertouchtool.net/docs/1104_webserver.html').
-;;
+
+
 ;;; Code:
 
 ;; Structures that represent a TouchBar widget and its attributes
