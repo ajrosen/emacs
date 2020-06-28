@@ -91,6 +91,10 @@
 (defconst btt-default-bg "gray29" "Default widget background color")
 (defconst btt-default-font-size 15 "Default widget font size")
 
+(defun btt-customize ()
+  (interactive)
+  (customize-group 'btt t))
+
 
 ;;;; Helper functions
 (defun btt--rgb-to-btt (color &optional transparency)
@@ -99,14 +103,14 @@ default transparency is 255.
 
 If COLOR is not a named color or an RGB triplet then return COLOR."
 
-  (unless transparency (setq transparency 255))
+  (unless transparency (setq transparency "255"))
 
   (if (and color (xw-color-defined-p color))
       (concat (number-to-string (* (car (color-name-to-rgb color)) 255)) ","
 	      (number-to-string (* (cadr (color-name-to-rgb color)) 255)) ","
 	      (number-to-string (* (caddr (color-name-to-rgb color)) 255)) ","
 	      transparency)
-    (concat color transparency)))
+    (concat color "," transparency)))
 
 (defun btt--remove-function (widget)
   "Remove the function associated with the BetterTouchTool WIDGET.
