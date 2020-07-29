@@ -1,11 +1,12 @@
 ;;; btt.el --- Interface to BetterTouchTool -*- lexical-binding: t; -*-
 
-
 ;; Author: Andy Rosen <ajr@corp.mlfs.org>
+;; URL: https://github.com/ajrosen/emacs
 ;; Version: 1.0
-;; Keywords: BetterTouchTool, MacOS
-;; Homepage: https://github.com/ajrosen/emacs
 ;; Package-Requires: ((emacs "26.1"))
+;; Keywords: hardware
+;; Prefix: btt
+;; Separator: /
 
 ;; This file is not part of GNU Emacs.
 
@@ -24,14 +25,37 @@
 ;; Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
 
-
 ;;; Commentary:
-
+;;
 ;; Send commands to a BetterTouchTool Webserver.
+;; BetterTouchTool, MacOS
 ;;
 ;; (see URL `https://docs.bettertouchtool.net/')
 ;; (see URL `https://docs.bettertouchtool.net/docs/1104_webserver.html')
-
+;;
+;; `btt-customize'
+;;
+;; `btt-get-string-variable'
+;; `btt-set-string-variable'
+;; `btt-set-number-variable'
+;; `btt-trigger-named'
+;; `btt-execute-assigned-actions-for-trigger'
+;; `btt-refresh-widget'
+;; `btt-get-trigger'
+;; `btt-update-touch-bar-widget'
+;;
+;; `btt-assign-func'
+;;  (btt-assign-func "widget" '(btt-update-text (length server-clients)))
+;;
+;; `btt-assign-var'
+;; (btt-assign-var "widget" 'battery-mode-line-string)
+;;
+;; `btt-set-widget'
+;; (btt-set-widget "widget"  (format-time-string "%b %e %l:%M %p" before-init-time))
+;;
+;; `btt/major-mode'
+;; `btt/emacs-version'
+;; `btt/update-text'
 
 ;;; Code:
 
@@ -39,7 +63,8 @@
 (cl-defstruct btt--widget name uuid args func)
 (cl-defstruct btt--widget-face text icon_data icon_path background_color font_color font_size)
 
-(defvar btt--widgets nil "List of widgets to be processed by `btt--run-functions'.")
+(defvar btt--vars nil "List of variables processed by `btt--variable-watcher'.")
+(defvar btt--widgets nil "List of widgets processed by `btt--run-functions'.")
 (eval-when-compile (defvar btt--current-widget nil "The widget currently being processed by `btt--run-functions'."))
 
 (cl-defstruct (btt--api-url (:include url)) query-string shared_secret) ; A URL with separate query-string and shared_secret slots
@@ -244,7 +269,12 @@ precedence if it is non-nil."
     (btt--call-api "update_touch_bar_widget" qs t)))
 
 
-;;;; Connecting functions to widgets
+;;;; Connecting variables and functions to widgets
+(defun btt--update-vars ()
+  "Trigger `btt--variable-watcher' for all variables in `btt--vars'."
+  (dolist (var btt--vars)
+    (set var (eval var))))
+
 (defun btt--run-functions ()
   "Call the functions stored in `btt--widgets'."
   (dolist (btt--current-widget btt--widgets)
@@ -310,10 +340,9 @@ Requires Emacs version 26.1 or later."
     ;; Save the uuid and face as properties of the variable
     (put var 'btt--uuid (lax-plist-get btt-uuids widget))
     (put var 'btt--face face)
+    (push var btt--vars)
     (add-variable-watcher var 'btt--variable-watcher)
-
-    ;; Assign var's value to itself to trigger btt--variable-watcher
-    (set var (eval var))))
+    (btt--update-vars)))
 
 
 ;;;###autoload
