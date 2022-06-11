@@ -1,0 +1,6 @@
+[submodule "btt"]
+	path = btt
+	url = https://github.com/ajrosen/btt
+[submodule "tab-bar-buffers"]
+	path = tab-bar-buffers
+	url = https://github.com/ajrosen/tab-bar-buffers
